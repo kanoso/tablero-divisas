@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tablero Financiero LATAM</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ── Reset & Variables ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:     #0f172a;
+  --card:   #1e293b;
+  --border: #334155;
+  --text:   #f1f5f9;
+  --muted:  #94a3b8;
+  --green:  #22c55e;
+  --red:    #ef4444;
+  --gray:   #64748b;
+  --blue:   #6366f1;
+  --yellow: #f59e0b;
+  --radius: 10px;
+  --font:   'Segoe UI', system-ui, sans-serif;
+}
+html { font-size: 14px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  min-height: 100vh;
+}
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Utility classes ───────────────────────────────────────────────────── */
+.green  { color: var(--green);  }
+.red    { color: var(--red);    }
+.gray   { color: var(--gray);   }
+.muted  { color: var(--muted);  }
+.yellow { color: var(--yellow); }
+.blue   { color: var(--blue);   }
+.bold   { font-weight: 600; }
+.small  { font-size: 0.82rem; }
+.mono   { font-family: 'Cascadia Code', 'Fira Mono', monospace; }
+
+/* ── Mini-tickers bar ──────────────────────────────────────────────────── */
+#ticker-bar {
+  background: #0b1220;
+  border-bottom: 1px solid var(--border);
+  padding: 6px 16px;
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  font-size: 0.8rem;
+}
+.ticker-item { display: flex; gap: 6px; align-items: center; }
+.ticker-label { color: var(--muted); }
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+header h1 { font-size: 1.35rem; font-weight: 700; }
+header .updated {
+  color: var(--yellow);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ── Tab navigation ────────────────────────────────────────────────────── */
+#tab-nav {
+  display: flex;
+  gap: 4px;
+  padding: 10px 20px 0;
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+  flex-wrap: nowrap;
+}
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.88rem;
+  padding: 8px 14px;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  margin-bottom: -2px;
+  position: relative;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+  font-weight: 600;
+}
+.badge-new {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  line-height: 1.4;
+}
+
+/* ── Tab panels ────────────────────────────────────────────────────────── */
+.tab-panel { display: none; padding: 20px; }
+.tab-panel.active { display: block; }
+
+/* ── Cards & grids ─────────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+}
+.card-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+.rate-card {
+  border-top: 4px solid var(--gray);
+  padding: 14px;
+}
+.rate-card.trend-up   { border-top-color: var(--green); }
+.rate-card.trend-down { border-top-color: var(--red);   }
+.rate-card .rate-name  { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+.rate-card .rate-value { font-size: 1.9rem; font-weight: 700; line-height: 1; }
+.rate-card .rate-change{ font-size: 0.8rem; margin-top: 4px; }
+.rate-est { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+/* ── Tables ────────────────────────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+th {
+  text-align: left;
+  color: var(--muted);
+  font-weight: 500;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #1e293b55;
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.03); }
+th.right, td.right { text-align: right; }
+
+/* ── Charts ────────────────────────────────────────────────────────────── */
+.chart-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  position: relative;
+}
+.chart-wrap canvas { max-width: 100%; }
+.chart-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.charts-2col {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+/* ── Section title ─────────────────────────────────────────────────────── */
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 20px 0 12px;
+}
+.section-title:first-child { margin-top: 0; }
+
+/* ── KPI cards ─────────────────────────────────────────────────────────── */
+.kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+}
+.kpi-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.kpi-value { font-size: 2rem; font-weight: 700; line-height: 1; }
+.kpi-unit  { font-size: 0.75rem; color: var(--muted); }
+
+/* ── Crypto cards ──────────────────────────────────────────────────────── */
+.btc-card {
+  background: linear-gradient(135deg, #1e293b 60%, #2d2060);
+  border: 1px solid #4c3f9a;
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.btc-card .btc-name { font-size: 0.85rem; color: var(--muted); }
+.btc-card .btc-price { font-size: 2.4rem; font-weight: 800; }
+.btc-card .btc-changes { display: flex; gap: 20px; font-size: 0.85rem; }
+.coin-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.coin-card .coin-sym  { font-size: 0.78rem; color: var(--muted); }
+.coin-card .coin-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+.coin-card .coin-price{ font-size: 1.2rem; font-weight: 700; }
+.coin-card .coin-chg  { font-size: 0.8rem; margin-top: 2px; }
+
+/* ── Rating cards ──────────────────────────────────────────────────────── */
+.rating-card {
+  text-align: center;
+  padding: 20px;
+}
+.rating-agency { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+.rating-value  { font-size: 1.8rem; font-weight: 800; color: var(--green); }
+
+/* ── Commodity cards ───────────────────────────────────────────────────── */
+.comm-card { padding: 14px; }
+.comm-name { font-size: 0.78rem; color: var(--muted); margin-bottom: 2px; }
+.comm-unit { font-size: 0.7rem; color: var(--gray); }
+.comm-price{ font-size: 1.4rem; font-weight: 700; margin: 4px 0; }
+.comm-chgs { display: flex; gap: 12px; font-size: 0.8rem; }
+
+/* ── Context note ──────────────────────────────────────────────────────── */
+.context-note {
+  background: rgba(99,102,241,0.08);
+  border-left: 3px solid var(--blue);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-top: 16px;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────── */
+footer {
+  margin-top: 32px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+footer .sources { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+footer .disclaimer { font-style: italic; }
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  header h1 { font-size: 1.1rem; }
+  .tab-btn  { font-size: 0.78rem; padding: 6px 10px; }
+  .kpi-value, .btc-card .btc-price { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<script>
+window.DASHBOARD_DATA = {"updated_at":"2026-03-30 06:58 UTC","rates":{"bcrp":{"name":"BCRP","value":6.25,"change_pbs":0,"trend":"neutral","est":true},"fed":{"name":"Fed","value":5.375,"change_pbs":-25,"trend":"down","est":true},"ecb":{"name":"ECB","value":3.75,"change_pbs":-25,"trend":"down","est":true},"chile":{"name":"Chile","value":5.5,"change_pbs":-25,"trend":"down","est":true},"colombia":{"name":"Colombia","value":10.25,"change_pbs":-25,"trend":"down","est":true},"mexico":{"name":"Mexico","value":10.75,"change_pbs":-25,"trend":"down","est":true},"brasil":{"name":"Brasil","value":13.75,"change_pbs":25,"trend":"up","est":true}},"bonds":{"peru_curve":[{"term":"2Y","yield":5.82,"week_pbs":-3,"month_pbs":-8,"est":true},{"term":"5Y","yield":6.21,"week_pbs":-2,"month_pbs":-5,"est":true},{"term":"10Y","yield":6.65,"week_pbs":1,"month_pbs":3,"est":true},{"term":"30Y","yield":7.12,"week_pbs":2,"month_pbs":5,"est":true}],"regional_10y":[{"country":"Peru","yield":6.65,"est":true},{"country":"Mexico","yield":9.45,"est":true},{"country":"Brasil","yield":12.8,"est":true},{"country":"Colombia","yield":11.2,"est":true},{"country":"Chile","yield":5.9,"est":true},{"country":"USA","yield":4.2,"est":false}],"embig":[{"country":"Peru","spread":145},{"country":"Mexico","spread":185},{"country":"Brasil","spread":210},{"country":"Colombia","spread":265},{"country":"Chile","spread":105}]},"fx":[{"pair":"USD/PEN","name":"Sol Peruano","price":3.4868,"day_pct":0,"ytd_pct":5.72849880876773},{"pair":"DXY","name":"Indice Dolar","price":100.065,"day_pct":-0.08587033579295117,"ytd_pct":1.6714126225009314},{"pair":"USD/CLP","name":"Peso Chileno","price":922.71,"day_pct":0,"ytd_pct":null},{"pair":"USD/COP","name":"Peso Colombiano","price":3671.3,"day_pct":-0.013072678646324621,"ytd_pct":-2.5717758063901672},{"pair":"USD/MXN","name":"Peso Mexicano","price":18.052,"day_pct":-0.2651933701657559,"ytd_pct":0.3744349564822501},{"pair":"USD/BRL","name":"Real Brasileno","price":5.2439,"day_pct":0.01716574480258781,"ytd_pct":-4.950160708896155}],"indices":[{"ticker":"^GSPC","name":"S&P 500","price":6368.85,"day_pct":-1.6721834878249031,"ytd_pct":-7.138911475154004},{"ticker":"^IXIC","name":"NASDAQ","price":20948.357,"day_pct":-2.1475189297508823,"ytd_pct":-9.843810560676655},{"ticker":"^DJI","name":"Dow Jones","price":45166.64,"day_pct":-1.7264105169483945,"ytd_pct":-6.6465297775888885},{"ticker":"BVL","name":"BVL Peru","price":0,"day_pct":null,"ytd_pct":null},{"ticker":"ILF","name":"MSCI LATAM","price":33.88,"day_pct":-0.6451612903225773,"ytd_pct":9.892965137712984}],"commodities":{"gold":{"name":"Oro","unit":"USD/oz","price":4573.7,"day_pct":1.0918816170457228,"ytd_pct":6.010112619089575},"silver":{"name":"Plata","unit":"USD/oz","price":70.76,"day_pct":1.3811679752421322,"ytd_pct":0.28913541169707857},"copper":{"name":"Cobre","unit":"USD/lb","price":5.5215,"day_pct":0.4914004914004777,"ytd_pct":-2.101059550790641},"wti":{"name":"WTI","unit":"USD/bbl","price":100.78,"day_pct":1.1441188277800087,"ytd_pct":75.85485622544356},"natgas":{"name":"Gas Natural","unit":"USD/MMBtu","price":2.923,"day_pct":-3.3719008264462764,"ytd_pct":-19.2095060083063}},"etfs":[{"ticker":"EMB","name":"iShares EM Bond","price":92.95,"ytd_pct":-3.478718584998503,"yield_est":6.8,"ter":0.4},{"ticker":"VWOB","name":"Vanguard EM Bond","price":65,"ytd_pct":-3.6323158770817954,"yield_est":6.5,"ter":0.2},{"ticker":"BND","name":"Vanguard Total Bond","price":73.11,"ytd_pct":-1.256078192431175,"yield_est":4.2,"ter":0.03},{"ticker":"TLT","name":"iShares 20Y Treasury","price":85.64,"ytd_pct":-1.597149728995627,"yield_est":4.5,"ter":0.15},{"ticker":"LQD","name":"iShares IG Corp Bond","price":107.62,"ytd_pct":-2.305737864096497,"yield_est":5.1,"ter":0.14},{"ticker":"HYG","name":"iShares HY Corp Bond","price":78.72,"ytd_pct":-2.417251757162996,"yield_est":7.2,"ter":0.49}],"crypto":{"market_cap_total":1807737115898.516,"coins":[{"id":"bitcoin","symbol":"BTC","name":"Bitcoin","price":67287,"change_24h":0.8968565526791292,"change_7d":null,"ytd_pct":-25.202709199515915,"market_cap":1346552672269.2039},{"id":"ethereum","symbol":"ETH","name":"Ethereum","price":2042.7,"change_24h":1.9492384281832313,"change_7d":null,"ytd_pct":-34.62842939339964,"market_cap":246632914642.7373},{"id":"solana","symbol":"SOL","name":"Solana","price":83.44,"change_24h":1.1692022241521312,"change_7d":null,"ytd_pct":-36.8643810413335,"market_cap":47767856922.607},{"id":"ripple","symbol":"XRP","name":"XRP","price":1.35,"change_24h":1.1553586460010628,"change_7d":null,"ytd_pct":-32.66968429595795,"market_cap":82862655594.35638},{"id":"binancecoin","symbol":"BNB","name":"BNB","price":615.58,"change_24h":0.29366122237115333,"change_7d":null,"ytd_pct":-30.132850823160684,"market_cap":83921016469.61156}]},"macro_peru":{"inflation":{"value":2.1,"label":"Inflacion CPI","unit":"%","est":true},"gdp":{"value":2.8,"label":"PIB Crecimiento","unit":"%","est":true},"debt_gdp":{"value":32.5,"label":"Deuda/PIB","unit":"%","est":true},"reserves":{"value":73.5,"label":"Reservas Internacionales","unit":"USD bn","est":true},"ratings":{"moodys":"Baa1","sp":"BBB+","fitch":"BBB+"},"latam_debt_gdp":[{"country":"Peru","debt_gdp":32.5},{"country":"Chile","debt_gdp":37.8},{"country":"Mexico","debt_gdp":46.5},{"country":"Colombia","debt_gdp":55.2},{"country":"Brasil","debt_gdp":88.1},{"country":"Argentina","debt_gdp":97.4}]}};
+const D = window.DASHBOARD_DATA;
+</script>
+
+<!-- Mini-tickers bar -->
+<div id="ticker-bar"></div>
+
+<!-- Header -->
+<header>
+  <h1>📊 Tablero Financiero LATAM</h1>
+  <span class="updated" id="updated-at"></span>
+</header>
+
+<!-- Tab navigation -->
+<nav id="tab-nav">
+  <button class="tab-btn active" data-tab="tasas">🏦 Tasas</button>
+  <button class="tab-btn" data-tab="bonos">📉 Bonos</button>
+  <button class="tab-btn" data-tab="divisas">💱 Divisas</button>
+  <button class="tab-btn" data-tab="activos">📈 Activos</button>
+  <button class="tab-btn" data-tab="etfs">🏛️ ETFs RF</button>
+  <button class="tab-btn" data-tab="crypto">₿ Crypto <span class="badge-new">NEW</span></button>
+  <button class="tab-btn" data-tab="macro">🇵🇪 Macro Perú</button>
+</nav>
+
+<!-- Tab panels -->
+<div id="panel-tasas"  class="tab-panel active"></div>
+<div id="panel-bonos"  class="tab-panel"></div>
+<div id="panel-divisas"class="tab-panel"></div>
+<div id="panel-activos"class="tab-panel"></div>
+<div id="panel-etfs"   class="tab-panel"></div>
+<div id="panel-crypto" class="tab-panel"></div>
+<div id="panel-macro"  class="tab-panel"></div>
+
+<!-- Footer -->
+<footer>
+  <div class="sources">
+    <strong>Fuentes:</strong>
+    <a href="https://finance.yahoo.com" target="_blank">Yahoo Finance</a>
+    <a href="https://www.coingecko.com" target="_blank">CoinGecko</a>
+    <a href="https://www.bcrp.gob.pe" target="_blank">BCRP</a>
+    <a href="https://www.federalreserve.gov" target="_blank">Fed Reserve</a>
+    <a href="https://www.ecb.europa.eu" target="_blank">ECB</a>
+  </div>
+  <div class="disclaimer">⚠️ Solo referencia, no constituye asesoría financiera. Los valores marcados (est.) son estimados.</div>
+  <div style="margin-top:4px;" id="footer-updated"></div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════
+// UTILITY FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+const fmtNum = (v, dec = 2) =>
+  (v === null || v === undefined) ? null : Number(v).toFixed(dec);
+
+const fmtPrice = (v, dec = 2) =>
+  (v === null || v === undefined)
+    ? '<span class="muted">N/A</span>'
+    : Number(v).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+
+function colorVal(v, suffix = '%', dec = 2) {
+  if (v === null || v === undefined) return '<span class="muted">N/A</span>';
+  const cls   = v > 0 ? 'green' : v < 0 ? 'red' : 'gray';
+  const arrow = v > 0 ? '↑' : v < 0 ? '↓' : '→';
+  return `<span class="${cls}">${arrow} ${Math.abs(v).toFixed(dec)}${suffix}</span>`;
+}
+
+const estTag = (flag) =>
+  flag ? ' <span class="muted small">(est.)</span>' : '';
+
+const CHART_DEFAULTS = {
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+    tooltip: {
+      backgroundColor: '#1e293b',
+      borderColor: '#334155',
+      borderWidth: 1,
+      titleColor: '#f1f5f9',
+      bodyColor: '#94a3b8',
+    },
+  },
+  scales: {
+    x: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#334155' } },
+    y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { color: '#334155' } },
+  },
+};
+
+const chartInstances = {};
+
+function destroyChart(id) {
+  if (chartInstances[id]) {
+    chartInstances[id].destroy();
+    delete chartInstances[id];
+  }
+}
+
+function makeChart(id, config) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  chartInstances[id] = new Chart(ctx, config);
+}
+
+const COLORS_POS_NEG = (vals) =>
+  vals.map(v => (v >= 0 ? '#22c55e99' : '#ef444499'));
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MINI-TICKER BAR
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderTickerBar() {
+  const items = [];
+
+  // BCRP rate
+  const bcrp = D.rates?.bcrp;
+  if (bcrp) items.push({ label: 'BCRP', value: `${bcrp.value}%`, change: null });
+
+  // USD/PEN
+  const pen = D.fx?.find(f => f.pair === 'USD/PEN');
+  if (pen?.price) items.push({ label: 'USD/PEN', value: fmtNum(pen.price, 4), change: pen.day_pct });
+
+  // Gold
+  const gold = D.commodities?.gold;
+  if (gold?.price) items.push({ label: 'Oro', value: `$${fmtNum(gold.price, 0)}`, change: gold.day_pct });
+
+  // BTC
+  const btc = D.crypto?.coins?.find(c => c.id === 'bitcoin');
+  if (btc?.price) items.push({ label: 'BTC', value: `$${Number(btc.price).toLocaleString('en-US', {maximumFractionDigits:0})}`, change: btc.change_24h });
+
+  // WTI
+  const wti = D.commodities?.wti;
+  if (wti?.price) items.push({ label: 'WTI', value: `$${fmtNum(wti.price, 2)}`, change: wti.day_pct });
+
+  // S&P 500
+  const sp = D.indices?.find(i => i.ticker === '^GSPC');
+  if (sp?.price) items.push({ label: 'S&P 500', value: fmtNum(sp.price, 0), change: sp.day_pct });
+
+  const bar = document.getElementById('ticker-bar');
+  bar.innerHTML = items.map(item => {
+    const chg = item.change !== null && item.change !== undefined
+      ? `<span class="${item.change >= 0 ? 'green' : 'red'}">${item.change >= 0 ? '▲' : '▼'} ${Math.abs(item.change).toFixed(2)}%</span>`
+      : '';
+    return `<div class="ticker-item"><span class="ticker-label">${item.label}</span><span class="bold">${item.value}</span>${chg}</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB 1 — TASAS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderTasas() {
+  const panel = document.getElementById('panel-tasas');
+  const rates = D.rates || {};
+  const rateArr = Object.values(rates);
+
+  // Cards
+  const cards = rateArr.map(r => {
+    const trendClass = r.trend === 'up' ? 'trend-up' : r.trend === 'down' ? 'trend-down' : '';
+    const chgHtml = r.change_pbs !== 0
+      ? colorVal(r.change_pbs, ' pbs', 0)
+      : '<span class="gray">→ Sin cambio</span>';
+    return `
+      <div class="card rate-card ${trendClass}">
+        <div class="rate-name">${r.name}</div>
+        <div class="rate-value">${r.value}%</div>
+        <div class="rate-change">${chgHtml}</div>
+        ${r.est ? '<div class="rate-est">*estimado</div>' : ''}
+      </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="section-title">Tasas de Política Monetaria</div>
+    <div class="card-grid">${cards}</div>
+
+    <div class="section-title" style="margin-top:24px">Comparativa de Tasas</div>
+    <div class="chart-wrap" style="max-height:340px;">
+      <div class="chart-title">Tasas de referencia (%)</div>
+      <canvas id="chart-tasas" height="280"></canvas>
+    </div>
+
+    <div class="context-note">
+      Las tasas de bancos centrales son el principal instrumento de política monetaria.
+      Una tasa más alta encarece el crédito y reduce la inflación, pero frena el crecimiento.
+      BCRP mantiene una postura restrictiva para anclar inflación en la banda 1%-3%.
+    </div>`;
+
+  // Chart
+  makeChart('chart-tasas', {
+    type: 'bar',
+    data: {
+      labels: rateArr.map(r => r.name),
+      datasets: [{
+        label: 'Tasa (%)',
+        data: rateArr.map(r => r.value),
+        backgroundColor: rateArr.map(r =>
+          r.trend === 'up' ? '#22c55e88' : r.trend === 'down' ? '#ef444488' : '#6366f188'
+        ),
+        borderColor: rateArr.map(r =>
+          r.trend === 'up' ? '#22c55e' : r.trend === 'down' ? '#ef4444' : '#6366f1'
+        ),
+        borderWidth: 2,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: { display: false },
+      },
+      scales: {
+        ...CHART_DEFAULTS.scales,
+        y: { ...CHART_DEFAULTS.scales.y, beginAtZero: true, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => `${v}%` } },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB 2 — BONOS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderBonos() {
+  const panel = document.getElementById('panel-bonos');
+  const bonds = D.bonds || {};
+  const curve = bonds.peru_curve || [];
+  const reg10y = bonds.regional_10y || [];
+  const embig  = bonds.embig || [];
+
+  // Curve table
+  const curveRows = curve.map(b => `
+    <tr>
+      <td>${b.term}${estTag(b.est)}</td>
+      <td class="right mono">${fmtNum(b.yield, 2)}%</td>
+      <td class="right">${colorVal(b.week_pbs, ' pbs', 0)}</td>
+      <td class="right">${colorVal(b.month_pbs, ' pbs', 0)}</td>
+    </tr>`).join('');
+
+  // Regional table
+  const regRows = reg10y.map(r => `
+    <tr>
+      <td>${r.country}${estTag(r.est)}</td>
+      <td class="right mono">${fmtNum(r.yield, 2)}%</td>
+    </tr>`).join('');
+
+  panel.innerHTML = `
+    <div class="section-title">Curva Soberana Perú (PEN)</div>
+    <div class="tbl-wrap card" style="margin-bottom:16px">
+      <table>
+        <thead><tr>
+          <th>Plazo</th><th class="right">Rendimiento</th>
+          <th class="right">Semana (pbs)</th><th class="right">Mes (pbs)</th>
+        </tr></thead>
+        <tbody>${curveRows}</tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap" style="margin-bottom:16px">
+      <div class="chart-title">Curva de Rendimientos Perú</div>
+      <canvas id="chart-curve" height="220"></canvas>
+    </div>
+
+    <div class="charts-2col">
+      <div class="chart-wrap">
+        <div class="chart-title">Tasas 10Y Regionales (%)</div>
+        <canvas id="chart-reg10y" height="260"></canvas>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">EMBIG Spreads vs. UST (pbs)</div>
+        <canvas id="chart-embig" height="260"></canvas>
+      </div>
+    </div>`;
+
+  // Yield curve chart
+  makeChart('chart-curve', {
+    type: 'line',
+    data: {
+      labels: curve.map(b => b.term),
+      datasets: [{
+        label: 'Rendimiento (%)',
+        data: curve.map(b => b.yield),
+        borderColor: '#6366f1',
+        backgroundColor: '#6366f122',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#6366f1',
+        pointRadius: 5,
+        fill: true,
+        tension: 0.35,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        ...CHART_DEFAULTS.scales,
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => `${v}%` } },
+      },
+    },
+  });
+
+  // Regional 10Y bar
+  makeChart('chart-reg10y', {
+    type: 'bar',
+    data: {
+      labels: reg10y.map(r => r.country),
+      datasets: [{
+        label: 'Yield 10Y (%)',
+        data: reg10y.map(r => r.yield),
+        backgroundColor: '#6366f188',
+        borderColor: '#6366f1',
+        borderWidth: 2,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: v => `${v}%` } },
+        y: { ...CHART_DEFAULTS.scales.y },
+      },
+    },
+  });
+
+  // EMBIG spreads bar
+  makeChart('chart-embig', {
+    type: 'bar',
+    data: {
+      labels: embig.map(e => e.country),
+      datasets: [{
+        label: 'Spread (pbs)',
+        data: embig.map(e => e.spread),
+        backgroundColor: '#f59e0b88',
+        borderColor: '#f59e0b',
+        borderWidth: 2,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: v => `${v} pbs` } },
+        y: { ...CHART_DEFAULTS.scales.y },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB 3 — DIVISAS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderDivisas() {
+  const panel = document.getElementById('panel-divisas');
+  const fx = D.fx || [];
+
+  const rows = fx.map(f => `
+    <tr>
+      <td class="bold">${f.pair}</td>
+      <td>${f.name}</td>
+      <td class="right mono">${fmtPrice(f.price, 4)}</td>
+      <td class="right">${colorVal(f.day_pct)}</td>
+      <td class="right">${colorVal(f.ytd_pct)}</td>
+    </tr>`).join('');
+
+  panel.innerHTML = `
+    <div class="section-title">Tipos de Cambio</div>
+    <div class="tbl-wrap card" style="margin-bottom:20px">
+      <table>
+        <thead><tr>
+          <th>Par</th><th>Nombre</th>
+          <th class="right">Precio</th><th class="right">Día</th><th class="right">YTD</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Retorno YTD por par de divisas (%)</div>
+      <canvas id="chart-fx-ytd" height="240"></canvas>
+    </div>`;
+
+  const ytdVals = fx.map(f => f.ytd_pct ?? null);
+  makeChart('chart-fx-ytd', {
+    type: 'bar',
+    data: {
+      labels: fx.map(f => f.pair),
+      datasets: [{
+        label: 'YTD %',
+        data: ytdVals,
+        backgroundColor: COLORS_POS_NEG(ytdVals),
+        borderColor: ytdVals.map(v => v >= 0 ? '#22c55e' : '#ef4444'),
+        borderWidth: 2,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      indexAxis: 'y',
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: v => `${v}%` } },
+        y: { ...CHART_DEFAULTS.scales.y },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB 4 — ACTIVOS (indices + commodities)
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderActivos() {
+  const panel = document.getElementById('panel-activos');
+  const indices = D.indices || [];
+  const comms   = D.commodities || {};
+
+  const idxRows = indices.map(i => `
+    <tr>
+      <td class="mono small muted">${i.ticker}</td>
+      <td class="bold">${i.name}</td>
+      <td class="right mono">${fmtPrice(i.price, 2)}</td>
+      <td class="right">${colorVal(i.day_pct)}</td>
+      <td class="right">${colorVal(i.ytd_pct)}</td>
+    </tr>`).join('');
+
+  const commCards = Object.values(comms).map(c => `
+    <div class="card comm-card">
+      <div class="comm-name">${c.name}</div>
+      <div class="comm-unit">${c.unit}</div>
+      <div class="comm-price">${c.price !== null && c.price !== undefined ? fmtPrice(c.price, 2) : '<span class="muted">N/A</span>'}</div>
+      <div class="comm-chgs">
+        <span class="small muted">Día:</span> ${colorVal(c.day_pct)}
+        <span class="small muted">YTD:</span> ${colorVal(c.ytd_pct)}
+      </div>
+    </div>`).join('');
+
+  panel.innerHTML = `
+    <div class="section-title">Índices Bursátiles</div>
+    <div class="tbl-wrap card" style="margin-bottom:20px">
+      <table>
+        <thead><tr>
+          <th>Ticker</th><th>Índice</th>
+          <th class="right">Precio</th><th class="right">Día</th><th class="right">YTD</th>
+        </tr></thead>
+        <tbody>${idxRows}</tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Materias Primas</div>
+    <div class="card-grid" style="margin-bottom:20px">${commCards}</div>
+
+    <div class="context-note">
+      Los mercados LATAM muestran alta correlación con el S&P 500 y los precios de commodities.
+      Perú es el segundo productor mundial de cobre y plata, por lo que la BVL es especialmente
+      sensible a los precios de metales industriales y preciosos.
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB 5 — ETFs RF
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderEtfs() {
+  const panel = document.getElementById('panel-etfs');
+  const etfs = D.etfs || [];
+
+  const rows = etfs.map(e => `
+    <tr>
+      <td class="bold mono">${e.ticker}</td>
+      <td>${e.name}</td>
+      <td class="right mono">${fmtPrice(e.price, 2)}</td>
+      <td class="right">${colorVal(e.ytd_pct)}</td>
+      <td class="right mono">${e.yield_est !== null ? e.yield_est.toFixed(1) + '%' : '<span class="muted">N/A</span>'}</td>
+      <td class="right mono">${e.ter !== null ? e.ter.toFixed(2) + '%' : '<span class="muted">N/A</span>'}</td>
+    </tr>`).join('');
+
+  panel.innerHTML = `
+    <div class="section-title">ETFs de Renta Fija</div>
+    <div class="tbl-wrap card" style="margin-bottom:20px">
+      <table>
+        <thead><tr>
+          <th>Ticker</th><th>Nombre</th>
+          <th class="right">Precio</th><th class="right">YTD</th>
+          <th class="right">Yield Est.</th><th class="right">TER</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">YTD Retorno ETFs (%)</div>
+      <canvas id="chart-etf-ytd" height="240"></canvas>
+    </div>`;
+
+  const ytdVals = etfs.map(e => e.ytd_pct ?? null);
+  makeChart('chart-etf-ytd', {
+    type: 'bar',
+    data: {
+      labels: etfs.map(e => e.ticker),
+      datasets: [{
+        label: 'YTD %',
+        data: ytdVals,
+        backgroundColor: COLORS_POS_NEG(ytdVals),
+        borderColor: ytdVals.map(v => v >= 0 ? '#22c55e' : '#ef4444'),
+        borderWidth: 2,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        ...CHART_DEFAULTS.scales,
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => `${v}%` } },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB 6 — CRYPTO
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderCrypto() {
+  const panel = document.getElementById('panel-crypto');
+  const crypto = D.crypto || {};
+  const coins  = crypto.coins || [];
+  const btc    = coins.find(c => c.id === 'bitcoin') || {};
+  const others = coins.filter(c => c.id !== 'bitcoin');
+
+  const mcapHtml = crypto.market_cap_total
+    ? `<span class="muted small">Market Cap Total:</span> <span class="bold">USD ${(crypto.market_cap_total / 1e9).toLocaleString('en-US', {maximumFractionDigits:0})}B</span>`
+    : '';
+
+  const btcPrice = btc.price
+    ? `$${Number(btc.price).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0})}`
+    : '<span class="muted">N/A</span>';
+
+  const otherCards = others.map(c => {
+    const price = c.price
+      ? `$${Number(c.price).toLocaleString('en-US', {minimumFractionDigits: c.price > 10 ? 2 : 4, maximumFractionDigits: c.price > 10 ? 2 : 4})}`
+      : '<span class="muted">N/A</span>';
+    return `
+      <div class="coin-card">
+        <div class="coin-sym">${c.symbol}</div>
+        <div class="coin-name">${c.name}</div>
+        <div class="coin-price">${price}</div>
+        <div class="coin-chg">${colorVal(c.change_24h)} <span class="muted small">24h</span></div>
+      </div>`;
+  }).join('');
+
+  const tableRows = coins.map(c => {
+    const price = c.price
+      ? `$${Number(c.price).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`
+      : '<span class="muted">N/A</span>';
+    const mcap = c.market_cap
+      ? `$${(c.market_cap / 1e9).toFixed(1)}B`
+      : '<span class="muted">N/A</span>';
+    return `
+      <tr>
+        <td><span class="bold">${c.name}</span> <span class="muted small">${c.symbol}</span></td>
+        <td class="right mono">${price}</td>
+        <td class="right">${colorVal(c.change_24h)}</td>
+        <td class="right">${colorVal(c.change_7d)}</td>
+        <td class="right">${colorVal(c.ytd_pct)}</td>
+        <td class="right muted small">${mcap}</td>
+      </tr>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div style="margin-bottom:16px">${mcapHtml}</div>
+
+    <div class="btc-card" style="margin-bottom:20px">
+      <div>
+        <div class="btc-name">Bitcoin (BTC)</div>
+        <div class="btc-price">${btcPrice}</div>
+      </div>
+      <div class="btc-changes">
+        <div><span class="muted small">24h</span><br>${colorVal(btc.change_24h)}</div>
+        <div><span class="muted small">7d</span><br>${colorVal(btc.change_7d)}</div>
+        <div><span class="muted small">YTD</span><br>${colorVal(btc.ytd_pct)}</div>
+        <div><span class="muted small">Mcap</span><br><span class="bold">${btc.market_cap ? '$' + (btc.market_cap/1e9).toFixed(0)+'B' : 'N/A'}</span></div>
+      </div>
+    </div>
+
+    <div class="card-grid-3" style="margin-bottom:20px">${otherCards}</div>
+
+    <div class="section-title">Tabla Completa</div>
+    <div class="tbl-wrap card" style="margin-bottom:20px">
+      <table>
+        <thead><tr>
+          <th>Moneda</th>
+          <th class="right">Precio</th><th class="right">24h</th>
+          <th class="right">7d</th><th class="right">YTD</th><th class="right">Market Cap</th>
+        </tr></thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Retorno YTD Criptomonedas (%)</div>
+      <canvas id="chart-crypto-ytd" height="220"></canvas>
+    </div>`;
+
+  const ytdVals = coins.map(c => c.ytd_pct ?? null);
+  makeChart('chart-crypto-ytd', {
+    type: 'bar',
+    data: {
+      labels: coins.map(c => c.symbol),
+      datasets: [{
+        label: 'YTD %',
+        data: ytdVals,
+        backgroundColor: COLORS_POS_NEG(ytdVals),
+        borderColor: ytdVals.map(v => v >= 0 ? '#22c55e' : '#ef4444'),
+        borderWidth: 2,
+        borderRadius: 4,
+      }],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, legend: { display: false } },
+      scales: {
+        ...CHART_DEFAULTS.scales,
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => `${v}%` } },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB 7 — MACRO PERÚ
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderMacro() {
+  const panel = document.getElementById('panel-macro');
+  const macro = D.macro_peru || {};
+  const ratings = macro.ratings || {};
+  const latam = macro.latam_debt_gdp || [];
+
+  const kpiKeys = ['inflation', 'gdp', 'debt_gdp', 'reserves'];
+  const kpiCards = kpiKeys.map(k => {
+    const item = macro[k] || {};
+    return `
+      <div class="card kpi-card">
+        <div class="kpi-label">${item.label || k}</div>
+        <div class="kpi-value">${item.value !== null && item.value !== undefined ? item.value : 'N/A'}</div>
+        <div class="kpi-unit">${item.unit || ''}${item.est ? ' <span class="muted small">(est.)</span>' : ''}</div>
+      </div>`;
+  }).join('');
+
+  const ratingCards = [
+    { agency: "Moody's", val: ratings.moodys },
+    { agency: "S&P",     val: ratings.sp },
+    { agency: "Fitch",   val: ratings.fitch },
+  ].map(r => `
+    <div class="card rating-card">
+      <div class="rating-agency">${r.agency}</div>
+      <div class="rating-value">${r.val || 'N/A'}</div>
+    </div>`).join('');
+
+  panel.innerHTML = `
+    <div class="section-title">Indicadores Macro</div>
+    <div class="card-grid" style="margin-bottom:20px">${kpiCards}</div>
+
+    <div class="section-title">Calificaciones Soberanas</div>
+    <div class="card-grid-3" style="margin-bottom:24px">${ratingCards}</div>
+
+    <div class="chart-wrap">
+      <div class="chart-title">Deuda Pública / PIB — Comparativa LATAM (%)</div>
+      <canvas id="chart-debt" height="280"></canvas>
+    </div>`;
+
+  // Color Peru specially
+  const bgColors = latam.map(r =>
+    r.country === 'Peru' ? '#22c55eaa' : '#6366f166'
+  );
+  const borderColors = latam.map(r =>
+    r.country === 'Peru' ? '#22c55e' : '#6366f1'
+  );
+
+  // Draw 60% reference line using a second dataset
+  makeChart('chart-debt', {
+    type: 'bar',
+    data: {
+      labels: latam.map(r => r.country),
+      datasets: [
+        {
+          label: 'Deuda/PIB (%)',
+          data: latam.map(r => r.debt_gdp),
+          backgroundColor: bgColors,
+          borderColor: borderColors,
+          borderWidth: 2,
+          borderRadius: 4,
+          order: 2,
+        },
+        {
+          label: 'Umbral 60%',
+          data: latam.map(() => 60),
+          type: 'line',
+          borderColor: '#ef4444',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 0,
+          fill: false,
+          order: 1,
+        },
+      ],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        legend: {
+          labels: {
+            color: '#94a3b8',
+            font: { size: 11 },
+            filter: item => item.datasetIndex !== undefined,
+          },
+        },
+      },
+      scales: {
+        ...CHART_DEFAULTS.scales,
+        y: {
+          ...CHART_DEFAULTS.scales.y,
+          beginAtZero: true,
+          ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => `${v}%` },
+        },
+      },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════
+
+const tabRenderers = {
+  tasas:   { fn: renderTasas,   rendered: false },
+  bonos:   { fn: renderBonos,   rendered: false },
+  divisas: { fn: renderDivisas, rendered: false },
+  activos: { fn: renderActivos, rendered: false },
+  etfs:    { fn: renderEtfs,    rendered: false },
+  crypto:  { fn: renderCrypto,  rendered: false },
+  macro:   { fn: renderMacro,   rendered: false },
+};
+
+function switchTab(tabId) {
+  // Update buttons
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  });
+  // Update panels
+  document.querySelectorAll('.tab-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === `panel-${tabId}`);
+  });
+  // Lazy render
+  const tr = tabRenderers[tabId];
+  if (tr && !tr.rendered) {
+    tr.fn();
+    tr.rendered = true;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Header date
+  const updatedEl = document.getElementById('updated-at');
+  const footerEl  = document.getElementById('footer-updated');
+  const ts = D.updated_at || '';
+  if (updatedEl) updatedEl.textContent = `Actualizado: ${ts}`;
+  if (footerEl)  footerEl.textContent  = `Última actualización: ${ts}`;
+
+  // Ticker bar
+  renderTickerBar();
+
+  // Tab buttons
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+  });
+
+  // Render first tab immediately
+  renderTasas();
+  tabRenderers.tasas.rendered = true;
+});
+</script>
+</body>
+</html>

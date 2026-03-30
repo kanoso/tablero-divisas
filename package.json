@@ -1,0 +1,20 @@
+{
+  "name": "tablero-divisas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch": "tsx scripts/fetch_data.ts",
+    "html": "tsx scripts/generate_html.ts",
+    "md": "tsx scripts/generate_md.ts",
+    "build": "npm run fetch && npm run html && npm run md"
+  },
+  "dependencies": {
+    "yahoo-finance2": "^3.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  }
+}
