@@ -7,7 +7,8 @@
     "fetch": "tsx scripts/fetch_data.ts",
     "html": "tsx scripts/generate_html.ts",
     "md": "tsx scripts/generate_md.ts",
-    "build": "npm run fetch && npm run html && npm run md"
+    "reports": "tsx scripts/generate_reports_index.ts",
+    "build": "npm run fetch && npm run html && npm run md && npm run reports"
   },
   "dependencies": {
     "yahoo-finance2": "^3.14.0"
