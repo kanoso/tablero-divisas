@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-11 13:58 UTC",
+  "updated_at": "2026-04-12 14:01 UTC",
   "rates": {
     "bcrp": {
       "name": "BCRP",
@@ -162,9 +162,9 @@
     {
       "pair": "USD/COP",
       "name": "Peso Colombiano",
-      "price": 3633.43,
-      "day_pct": -0.31851502315475627,
-      "ytd_pct": -3.5767653791601046
+      "price": 3640.21,
+      "day_pct": -0.1325088339222595,
+      "ytd_pct": -3.3968383218262774
     },
     {
       "pair": "USD/MXN",
@@ -176,9 +176,9 @@
     {
       "pair": "USD/BRL",
       "name": "Real Brasileno",
-      "price": 5.0126,
-      "day_pct": -1.128249635094085,
-      "ytd_pct": -9.142654253401126
+      "price": 5.0061,
+      "day_pct": -1.2564598209002302,
+      "ytd_pct": -9.260467685878327
     }
   ],
   "indices": [
@@ -224,21 +224,21 @@
       "unit": "USD/oz",
       "price": 4787.4,
       "day_pct": -0.6351183063511906,
-      "ytd_pct": 10.372242029694572
+      "ytd_pct": 10.963285988928565
     },
     "silver": {
       "name": "Plata",
       "unit": "USD/oz",
       "price": 76.48,
       "day_pct": 0.05494649258222558,
-      "ytd_pct": 8.175063441320185
+      "ytd_pct": 8.39617271610166
     },
     "copper": {
       "name": "Cobre",
       "unit": "USD/lb",
       "price": 5.886,
       "day_pct": 2.1077283372365367,
-      "ytd_pct": 4.08688345228758
+      "ytd_pct": 4.3617073712854575
     },
     "wti": {
       "name": "WTI",
@@ -306,57 +306,57 @@
     }
   ],
   "crypto": {
-    "market_cap_total": 1938874613144.7378,
+    "market_cap_total": 1892751399402.5776,
     "coins": [
       {
         "id": "bitcoin",
         "symbol": "BTC",
         "name": "Bitcoin",
-        "price": 72702,
-        "change_24h": 0.4819711993779037,
+        "price": 70905,
+        "change_24h": -2.4648433708015474,
         "change_7d": null,
-        "ytd_pct": -19.163850772536353,
-        "market_cap": 1454947355065.7087
+        "ytd_pct": -21.178404681140435,
+        "market_cap": 1419613751053.2297
       },
       {
         "id": "ethereum",
         "symbol": "ETH",
         "name": "Ethereum",
-        "price": 2241.56,
-        "change_24h": 0.7738268310218429,
+        "price": 2187.01,
+        "change_24h": -2.423060520445084,
         "change_7d": null,
-        "ytd_pct": -28.26590225459626,
-        "market_cap": 270503055783.52676
+        "ytd_pct": -29.941485282241604,
+        "market_cap": 264095568874.6327
       },
       {
         "id": "solana",
         "symbol": "SOL",
         "name": "Solana",
-        "price": 84.18,
-        "change_24h": -0.13689137020548536,
+        "price": 81.92,
+        "change_24h": -2.677223996388448,
         "change_7d": null,
-        "ytd_pct": -36.285150941531114,
-        "market_cap": 48350587740.5812
+        "ytd_pct": -37.98516013373502,
+        "market_cap": 47061474567.15327
       },
       {
         "id": "ripple",
         "symbol": "XRP",
         "name": "XRP",
-        "price": 1.34,
-        "change_24h": 0.03330544279186909,
+        "price": 1.32,
+        "change_24h": -1.6039316097310377,
         "change_7d": null,
-        "ytd_pct": -32.959069564433925,
-        "market_cap": 82571175394.22035
+        "ytd_pct": -33.91469113417963,
+        "market_cap": 81309971303.99748
       },
       {
         "id": "binancecoin",
         "symbol": "BNB",
         "name": "BNB",
-        "price": 605.08,
-        "change_24h": 0.4390368336368378,
+        "price": 591.48,
+        "change_24h": -2.2233055812040523,
         "change_7d": null,
-        "ytd_pct": -31.318645949476263,
-        "market_cap": 82502439160.70049
+        "ytd_pct": -32.82257295043408,
+        "market_cap": 80670633603.56432
       }
     ]
   },
