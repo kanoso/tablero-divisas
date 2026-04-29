@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-27 15:10 UTC",
+  "updated_at": "2026-04-29 15:20 UTC",
   "rates": {
     "bcrp": {
       "name": "BCRP",
@@ -141,67 +141,67 @@
     {
       "pair": "USD/PEN",
       "name": "Sol Peruano",
-      "price": 3.5103,
-      "day_pct": 0.7259684361549527,
-      "ytd_pct": 6.441076565997811
+      "price": 3.5325,
+      "day_pct": 0.6037649873266405,
+      "ytd_pct": null
     },
     {
       "pair": "DXY",
       "name": "Indice Dolar",
-      "price": 98.361,
-      "day_pct": -0.17456080703926305,
-      "ytd_pct": -0.059945243860786875
+      "price": 98.792,
+      "day_pct": 0.15409570154095803,
+      "ytd_pct": 0.37797363835614994
     },
     {
       "pair": "USD/CLP",
       "name": "Peso Chileno",
-      "price": 894.83,
-      "day_pct": 0.05590777453512685,
-      "ytd_pct": -0.5346580276860414
+      "price": 902.87,
+      "day_pct": 1.586462189317824,
+      "ytd_pct": null
     },
     {
       "pair": "USD/COP",
       "name": "Peso Colombiano",
-      "price": 3574.82,
-      "day_pct": 0.5640308655693669,
-      "ytd_pct": -5.13214217315033
+      "price": 3613.11,
+      "day_pct": 0.4277709215836788,
+      "ytd_pct": null
     },
     {
       "pair": "USD/MXN",
       "name": "Peso Mexicano",
-      "price": 17.3784,
-      "day_pct": -0.08681403972748634,
-      "ytd_pct": -3.38765747590369
+      "price": 17.4727,
+      "day_pct": 0.46955213719248184,
+      "ytd_pct": null
     },
     {
       "pair": "USD/BRL",
       "name": "Real Brasileno",
-      "price": 4.9675,
-      "day_pct": -0.2369811017612924,
-      "ytd_pct": -9.960122689842029
+      "price": 4.9975,
+      "day_pct": 0.44822318700754826,
+      "ytd_pct": null
     }
   ],
   "indices": [
     {
       "ticker": "^GSPC",
       "name": "S&P 500",
-      "price": 7155.1,
-      "day_pct": -0.13928665137025076,
-      "ytd_pct": 4.323555776541425
+      "price": 7129.92,
+      "day_pct": -0.12439065389141185,
+      "ytd_pct": 3.957875423060858
     },
     {
       "ticker": "^IXIC",
       "name": "NASDAQ",
-      "price": 24770.723,
-      "day_pct": -0.2652335879495251,
-      "ytd_pct": 6.606628441317437
+      "price": 24648.91,
+      "day_pct": -0.06036782897881715,
+      "ytd_pct": 6.082379709973646
     },
     {
       "ticker": "^DJI",
       "name": "Dow Jones",
-      "price": 49053.77,
-      "day_pct": -0.3594098074149293,
-      "ytd_pct": 1.3892822575879074
+      "price": 48849.26,
+      "day_pct": -0.5955606546181607,
+      "ytd_pct": 0.9649607795708214
     },
     {
       "ticker": "BVL",
@@ -213,150 +213,150 @@
     {
       "ticker": "ILF",
       "name": "MSCI LATAM",
-      "price": 36.8,
-      "day_pct": -0.05431830526888411,
-      "ytd_pct": 19.364253415920356
+      "price": 35.95,
+      "day_pct": -1.1276127612761182,
+      "ytd_pct": 16.607203541692147
     }
   ],
   "commodities": {
     "gold": {
       "name": "Oro",
       "unit": "USD/oz",
-      "price": 4694,
-      "day_pct": -0.9892636419245214,
-      "ytd_pct": 8.798444888014123
+      "price": 4555,
+      "day_pct": -1.1587535804183586,
+      "ytd_pct": 5.5766758553268705
     },
     "silver": {
       "name": "Plata",
       "unit": "USD/oz",
-      "price": 74.96,
-      "day_pct": -1.9027926819692829,
-      "ytd_pct": 6.241849515069124
+      "price": 72.195,
+      "day_pct": -2.1018374127059616,
+      "ytd_pct": 2.3229774145872435
     },
     "copper": {
       "name": "Cobre",
       "unit": "USD/lb",
-      "price": 6.072,
-      "day_pct": -0.27100271002709597,
-      "ytd_pct": 7.659577490140504
+      "price": 5.9525,
+      "day_pct": -0.3598928690994395,
+      "ytd_pct": 5.54078027300957
     },
     "wti": {
       "name": "WTI",
       "unit": "USD/bbl",
-      "price": 96.72,
-      "day_pct": 2.4576271186440604,
-      "ytd_pct": 68.77180456877217
+      "price": 105.24,
+      "day_pct": 5.3137196037225936,
+      "ytd_pct": 83.60083465470134
     },
     "natgas": {
       "name": "Gas Natural",
       "unit": "USD/MMBtu",
-      "price": 2.794,
-      "day_pct": 4.1371598956392175,
-      "ytd_pct": -22.775016948938095
+      "price": 2.65,
+      "day_pct": -1.5235971757710862,
+      "ytd_pct": -26.75511130417729
     }
   },
   "etfs": [
     {
       "ticker": "EMB",
       "name": "iShares EM Bond",
-      "price": 95.995,
-      "ytd_pct": -0.3167188946108906,
+      "price": 95.61,
+      "ytd_pct": -0.716513415929383,
       "yield_est": 6.8,
       "ter": 0.4
     },
     {
       "ticker": "VWOB",
       "name": "Vanguard EM Bond",
-      "price": 67.085,
-      "ytd_pct": -0.5411384437120326,
+      "price": 66.795,
+      "ytd_pct": -0.9710879302181272,
       "yield_est": 6.5,
       "ter": 0.2
     },
     {
       "ticker": "BND",
       "name": "Vanguard Total Bond",
-      "price": 73.75,
-      "ytd_pct": -0.39168140456698186,
+      "price": 73.475,
+      "ytd_pct": -0.7631043144514065,
       "yield_est": 4.2,
       "ter": 0.03
     },
     {
       "ticker": "TLT",
       "name": "iShares 20Y Treasury",
-      "price": 86.36,
-      "ytd_pct": -0.7698473840547668,
+      "price": 85.765,
+      "ytd_pct": -1.453521093176623,
       "yield_est": 4.5,
       "ter": 0.15
     },
     {
       "ticker": "LQD",
       "name": "iShares IG Corp Bond",
-      "price": 109.29,
-      "ytd_pct": -0.7897628155955457,
+      "price": 108.815,
+      "ytd_pct": -1.2209524110298768,
       "yield_est": 5.1,
       "ter": 0.14
     },
     {
       "ticker": "HYG",
       "name": "iShares HY Corp Bond",
-      "price": 80.455,
-      "ytd_pct": -0.2665133789148763,
+      "price": 80.215,
+      "ytd_pct": -0.56402856251687,
       "yield_est": 7.2,
       "ter": 0.49
     }
   ],
   "crypto": {
-    "market_cap_total": 2049137514740.1355,
+    "market_cap_total": 2019383653340.2485,
     "coins": [
       {
         "id": "bitcoin",
         "symbol": "BTC",
         "name": "Bitcoin",
-        "price": 77463,
-        "change_24h": -0.8161243127724793,
+        "price": 76249,
+        "change_24h": 0.3043773651899421,
         "change_7d": null,
-        "ytd_pct": -13.880413146238041,
-        "market_cap": 1552121679735.7744
+        "ytd_pct": -15.254226099527651,
+        "market_cap": 1527697100689.485
       },
       {
         "id": "ethereum",
         "symbol": "ETH",
         "name": "Ethereum",
-        "price": 2296.67,
-        "change_24h": -2.127855233301514,
+        "price": 2287.42,
+        "change_24h": 0.5857531032448278,
         "change_7d": null,
-        "ytd_pct": -26.44688647550895,
-        "market_cap": 277614895036.3688
+        "ytd_pct": -26.798631153334192,
+        "market_cap": 276127661906.6943
       },
       {
         "id": "solana",
         "symbol": "SOL",
         "name": "Solana",
-        "price": 84.8,
-        "change_24h": -1.8991524050651145,
+        "price": 83.29,
+        "change_24h": -0.13960956911215772,
         "change_7d": null,
-        "ytd_pct": -35.79229406922699,
-        "market_cap": 48839852257.52831
+        "ytd_pct": -36.91993844456824,
+        "market_cap": 47958919071.475266
       },
       {
         "id": "ripple",
         "symbol": "XRP",
         "name": "XRP",
-        "price": 1.4,
-        "change_24h": -1.9220094552516707,
+        "price": 1.37,
+        "change_24h": -0.4819071102458352,
         "change_7d": null,
-        "ytd_pct": -30.22792923242893,
-        "market_cap": 86315337062.55206
+        "ytd_pct": -31.91302847044207,
+        "market_cap": 84241197554.71385
       },
       {
         "id": "binancecoin",
         "symbol": "BNB",
         "name": "BNB",
-        "price": 624.67,
-        "change_24h": -1.159761257504054,
+        "price": 618.05,
+        "change_24h": -0.7342520765764624,
         "change_7d": null,
-        "ytd_pct": -29.094154964286734,
-        "market_cap": 84245750647.91205
+        "ytd_pct": -29.832083438801014,
+        "market_cap": 83358774117.87993
       }
     ]
   },
