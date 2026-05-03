@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-02 14:11 UTC",
+  "updated_at": "2026-05-03 14:12 UTC",
   "rates": {
     "bcrp": {
       "name": "BCRP",
@@ -224,21 +224,21 @@
       "unit": "USD/oz",
       "price": 4644.5,
       "day_pct": 0.3218420597891748,
-      "ytd_pct": 7.312720358365671
+      "ytd_pct": 7.651124261265785
     },
     "silver": {
       "name": "Plata",
       "unit": "USD/oz",
       "price": 76.431,
       "day_pct": 3.2460690549521685,
-      "ytd_pct": 7.646403795190181
+      "ytd_pct": 8.326719230581245
     },
     "copper": {
       "name": "Cobre",
       "unit": "USD/lb",
       "price": 5.9845,
       "day_pct": 0.06688403979599632,
-      "ytd_pct": 5.177310295108945
+      "ytd_pct": 6.108157322785876
     },
     "wti": {
       "name": "WTI",
@@ -306,57 +306,57 @@
     }
   ],
   "crypto": {
-    "market_cap_total": 2064753804603.8386,
+    "market_cap_total": 2074952578530.8308,
     "coins": [
       {
         "id": "bitcoin",
         "symbol": "BTC",
         "name": "Bitcoin",
-        "price": 78314,
-        "change_24h": -0.5823811016857832,
+        "price": 78720,
+        "change_24h": 0.5257534824366666,
         "change_7d": null,
-        "ytd_pct": -12.915375689627332,
-        "market_cap": 1568838978039.3582
+        "ytd_pct": -12.482575012892037,
+        "market_cap": 1576219933647.9795
       },
       {
         "id": "ethereum",
         "symbol": "ETH",
         "name": "Ethereum",
-        "price": 2307.19,
-        "change_24h": -0.6527335733348362,
+        "price": 2324.58,
+        "change_24h": 0.8226277258973399,
         "change_7d": null,
-        "ytd_pct": -26.197246600641442,
-        "market_cap": 278531167254.7471
+        "ytd_pct": -25.576967931965555,
+        "market_cap": 280543216275.9898
       },
       {
         "id": "solana",
         "symbol": "SOL",
         "name": "Solana",
-        "price": 83.92,
-        "change_24h": -0.7477090111543427,
+        "price": 84.15,
+        "change_24h": 0.27379039454009924,
         "change_7d": null,
-        "ytd_pct": -36.48098761223496,
-        "market_cap": 48366047410.82571
+        "ytd_pct": -36.26908190669405,
+        "market_cap": 48510021321.54722
       },
       {
         "id": "ripple",
         "symbol": "XRP",
         "name": "XRP",
         "price": 1.39,
-        "change_24h": -0.42881418821276657,
+        "change_24h": 0.18609861550556048,
         "change_7d": null,
-        "ytd_pct": -30.65169571969876,
-        "market_cap": 85823236955.87213
+        "ytd_pct": -30.48717664054917,
+        "market_cap": 86199992767.47621
       },
       {
         "id": "binancecoin",
         "symbol": "BNB",
         "name": "BNB",
-        "price": 616.87,
-        "change_24h": -0.8830431197519634,
+        "price": 619.27,
+        "change_24h": 0.41853630271130526,
         "change_7d": null,
-        "ytd_pct": -29.959233636999414,
-        "market_cap": 83194374943.03563
+        "ytd_pct": -29.694712720583937,
+        "market_cap": 83479414517.83815
       }
     ]
   },
