@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-09 14:18 UTC",
+  "updated_at": "2026-05-10 14:21 UTC",
   "rates": {
     "bcrp": {
       "name": "BCRP",
@@ -141,9 +141,9 @@
     {
       "pair": "USD/PEN",
       "name": "Sol Peruano",
-      "price": 3.4336,
-      "day_pct": -0.639523106751165,
-      "ytd_pct": 4.115341502850391
+      "price": 3.4338,
+      "day_pct": -0.6337355673235533,
+      "ytd_pct": 4.121407009600345
     },
     {
       "pair": "DXY",
@@ -162,23 +162,23 @@
     {
       "pair": "USD/COP",
       "name": "Peso Colombiano",
-      "price": 3732.9,
-      "day_pct": 0.23979785014380597,
-      "ytd_pct": -0.9370512513842287
+      "price": 3737.88,
+      "day_pct": 0.3735261025196312,
+      "ytd_pct": -0.8048935287420695
     },
     {
       "pair": "USD/MXN",
       "name": "Peso Mexicano",
-      "price": 17.1795,
-      "day_pct": -0.7134621552972082,
-      "ytd_pct": -4.476918947335712
+      "price": 17.16,
+      "day_pct": -0.8261597010914269,
+      "ytd_pct": -4.585348760825616
     },
     {
       "pair": "USD/BRL",
       "name": "Real Brasileno",
-      "price": 4.8945,
-      "day_pct": -0.5647766288117353,
-      "ytd_pct": -11.283313344836658
+      "price": 4.8929,
+      "day_pct": -0.5972817585275151,
+      "ytd_pct": -11.312310781999082
     }
   ],
   "indices": [
@@ -224,21 +224,21 @@
       "unit": "USD/oz",
       "price": 4730.7,
       "day_pct": 0.4203018531490837,
-      "ytd_pct": 9.410346958784348
+      "ytd_pct": 9.649089152412586
     },
     "silver": {
       "name": "Plata",
       "unit": "USD/oz",
       "price": 80.865,
       "day_pct": 0.8543277625342828,
-      "ytd_pct": 13.94494716431248
+      "ytd_pct": 14.611086432878501
     },
     "copper": {
       "name": "Cobre",
       "unit": "USD/lb",
       "price": 6.2965,
       "day_pct": 1.9511010362694272,
-      "ytd_pct": 10.797876248410859
+      "ytd_pct": 11.640077217185043
     },
     "wti": {
       "name": "WTI",
@@ -306,57 +306,57 @@
     }
   ],
   "crypto": {
-    "market_cap_total": 2117536164046.1995,
+    "market_cap_total": 2131522565621.3022,
     "coins": [
       {
         "id": "bitcoin",
         "symbol": "BTC",
         "name": "Bitcoin",
-        "price": 80367,
-        "change_24h": 0.17946503142623052,
+        "price": 80900,
+        "change_24h": 0.7213060023659847,
         "change_7d": null,
-        "ytd_pct": -10.63546774967013,
-        "market_cap": 1609463041196.9583
+        "ytd_pct": -10.072309190691051,
+        "market_cap": 1620234187041.9927
       },
       {
         "id": "ethereum",
         "symbol": "ETH",
         "name": "Ethereum",
-        "price": 2312.76,
-        "change_24h": 1.15546820335284,
+        "price": 2327.58,
+        "change_24h": 0.7986496405919928,
         "change_7d": null,
-        "ytd_pct": -25.97000148855628,
-        "market_cap": 279114056558.86206
+        "ytd_pct": -25.503673139607436,
+        "market_cap": 280923890216.3228
       },
       {
         "id": "solana",
         "symbol": "SOL",
         "name": "Solana",
-        "price": 93.2,
-        "change_24h": 4.616692749744448,
+        "price": 93.84,
+        "change_24h": 0.6722823490195167,
         "change_7d": null,
-        "ytd_pct": -29.419954611761035,
-        "market_cap": 53845893976.519684
+        "ytd_pct": -29.026416269184686,
+        "market_cap": 54194390472.053345
       },
       {
         "id": "ripple",
         "symbol": "XRP",
         "name": "XRP",
-        "price": 1.42,
-        "change_24h": 1.7881635776720275,
+        "price": 1.43,
+        "change_24h": 0.8268039725031394,
         "change_7d": null,
-        "ytd_pct": -29.2208575626833,
-        "market_cap": 87714607858.55264
+        "ytd_pct": -28.692396035376653,
+        "market_cap": 88440549651.05241
       },
       {
         "id": "binancecoin",
         "symbol": "BNB",
         "name": "BNB",
-        "price": 648.43,
-        "change_24h": 1.2259394746511534,
+        "price": 650.74,
+        "change_24h": 0.37517516293700093,
         "change_7d": null,
-        "ytd_pct": -26.37630735175517,
-        "market_cap": 87398564455.30663
+        "ytd_pct": -26.134493312696428,
+        "market_cap": 87729548239.88087
       }
     ]
   },
