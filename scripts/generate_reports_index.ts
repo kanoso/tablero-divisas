@@ -5,14 +5,14 @@ import path from 'path';
 
 /** Convert Obsidian callout syntax to styled HTML divs */
 function renderCallouts(md: string): string {
-  // Match callout blocks: > [!type]+ Title\n> content lines
+  // Match callout blocks: > [!type]+ Title<br/>> content lines
   return md.replace(
-    /^> \[!([\w-]+)\][+\-]?\s*(.*?)\n((?:^>.*\n?)*)/gm,
+    /^> \[!([\w-]+)\][+\-]?\s*(.*?)<br/>((?:^>.*<br/>?)*)/gm,
     (_match, type: string, title: string, body: string) => {
       const content = body
-        .split('\n')
+        .split('<br/>')
         .map((l: string) => l.replace(/^>\s?/, ''))
-        .join('\n')
+        .join('<br/>')
         .trim();
       const icons: Record<string, string> = {
         abstract: '📋', summary: '📋', info: 'ℹ️', note: '📝',
@@ -23,14 +23,14 @@ function renderCallouts(md: string): string {
       const safeTitle = title || type.charAt(0).toUpperCase() + type.slice(1);
       return `<div class="callout callout-${type.toLowerCase()}">` +
         `<div class="callout-title">${icon} ${safeTitle}</div>` +
-        `<div class="callout-body">\n\n${content}\n\n</div></div>\n\n`;
+        `<div class="callout-body"><br/><br/>${content}<br/><br/></div></div><br/><br/>`;
     }
   );
 }
 
 /** Strip YAML frontmatter */
 function stripFrontmatter(md: string): string {
-  return md.replace(/^---[\s\S]*?---\n/, '');
+  return md.replace(/^---[\s\S]*?---<br/>/, '');
 }
 
 /** Generate full HTML page for a single report */
@@ -122,7 +122,7 @@ function indexPage(files: string[]): string {
       <td><a href="${htmlFile}">Ver reporte</a></td>
       <td><a href="${f}" download>Descargar .md</a></td>
     </tr>`;
-  }).join('\n');
+  }).join('<br/>');
 
   return `<!DOCTYPE html>
 <html lang="es">

@@ -750,6 +750,6 @@ function chartInit(color = '#6366f1'): string {
   L.push(`> Generado el ${today} — Datos: ${data.updated_at ?? today}`);
   L.push('');
 
-  await fs.writeFile(outPath, L.join('\n'), 'utf-8');
+  await fs.writeFile(outPath, L.join('<br/>'), 'utf-8');
   console.log(`[OK] Report saved to ${outPath}`);
 })();
